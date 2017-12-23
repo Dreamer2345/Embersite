@@ -58,7 +58,7 @@ bool CheckDir(uint8_t d,uint8_t _x,uint8_t _y){
 
 void SetMapCurrent(UPoint Cur,uint8_t d){
   MapElements Elem = Map[GetOffset(Cur.x,Cur.y)];
-  MapElements Elem1 = MapElements::Null;
+  MapElements Elem1 = MapElements::HallHor;
   if (Elem == MapElements::Null) {
     switch(d){
       case 0:Elem1 = MapElements::RoomEndDown; break;
@@ -92,10 +92,52 @@ void SetMapCurrent(UPoint Cur,uint8_t d){
                                                 case 2:Elem1 = MapElements::HallHor; break;
                                                 };
                                     } break;
+      case MapElements::HallHor: if (d < 2) {switch(d){
+                                  case 1:Elem1 = MapElements::HallHorDown; break;
+                                  case 0:Elem1 = MapElements::HallHorUp; break;
+                                 };
+                                } break;
+      case MapElements::HallVer: if (d > 2) {switch(d){
+                                  case 2:Elem1 = MapElements::HallVerRight; break;
+                                  case 3:Elem1 = MapElements::HallVerLeft; break;
+                                 };
+                                } break;
+                                  
+      case MapElements::HallHorUp: if (d == 1) { Elem1 = MapElements::RoomCenter;} break;                          
+      case MapElements::HallHorDown:  if (d == 0) { Elem1 = MapElements::RoomCenter;} break;                                  
+      case MapElements::HallVerRight:  if (d == 3) { Elem1 = MapElements::RoomCenter;} break;     
+      case MapElements::HallVerLeft:  if (d == 2) { Elem1 = MapElements::RoomCenter;} break;     
+      
+      case MapElements::RoomRightDown:if ((d != 1)&&(d != 2)) { switch(d){
+                                        case 0:Elem1 = MapElements::HallVerRight;
+                                        case 3:Elem1 = MapElements::HallHorDown;
+                                        }
+                                      } break;
+      case MapElements::RoomRightUp:if ((d != 0)&&(d != 2)) { switch(d){
+                                        case 0:Elem1 = MapElements::HallVerRight;
+                                        case 3:Elem1 = MapElements::HallHorUp;
+                                        }
+                                      } break;
+                                      
+      case MapElements::RoomLeftDown:if ((d != 1)&&(d != 3)) { switch(d){
+                                        case 0:Elem1 = MapElements::HallVerLeft;
+                                        case 2:Elem1 = MapElements::HallHorDown;
+                                        }
+                                      } break;
+      case MapElements::RoomLeftUp:if ((d != 0)&&(d != 3)) { switch(d){
+                                        case 1:Elem1 = MapElements::HallVerLeft;
+                                        case 2:Elem1 = MapElements::HallHorUp;
+                                        }
+                                      } break;
+      
+                               
+      default: Elem1 = MapElements::HallHor; break;
+                                    
     }
-  }
+    }
   Map[GetOffset(Cur.x,Cur.y)] = Elem1;
 }
+
 
 
 uint8_t CheckSuround(UPoint Cur){
@@ -130,24 +172,20 @@ uint8_t GetUsed(){
   for(uint8_t i=0; i<100; i++)
     if (Map[i] != MapElements::Null)
         Used++;
-    else ard.println(i);
   return 100-Used;
 }
 
 void Disp(){
     ard.clear();
-    GetUsed();
-    /*
-    for(uint8_t i=5; i<10; i++){
+    for(uint8_t i=0; i<10; i++){
         for(uint8_t j=0; j<10; j++){
           if (Map[GetOffset(i,j)] != MapElements::Null)
             ard.print('1');
           else
             ard.print('0');
         }
-        ard.println(i);
+        ard.println();
       }
-    */
     ard.display();
 }
 
@@ -176,6 +214,7 @@ void GenMaze(){
     while (GetUsed() != 0){
       Disp();
       if (CheckDir(d,CurPoint.x,CurPoint.y)){
+          
           switch(d){
             case 0:CurPoint.y++;break;
             case 1:CurPoint.y--;break;
@@ -185,23 +224,29 @@ void GenMaze(){
 
           AddToStack(Stack,CurPoint);
           SetMapCurrent(CurPoint,d);
-          if (random(0,3) == 0){
-            d = random(0,3);
-          }
+          
+
+            if (CheckSuround(CurPoint) != 0){
+                d = CheckSuround(CurPoint)-1;
+            }
           
       } else {
         if (CheckSuround(CurPoint) != 0){
           d = CheckSuround(CurPoint)-1;
         } else {
-          while (CheckSuround(CurPoint) == 0){
-            CurPoint = RemoveFromStack(Stack);
-          d = CheckSuround(CurPoint);
-          }
+          CurPoint = RemoveFromStack(Stack);
         }
       }
     }
 }
 
 void UpdateGame(){
+  for(uint8_t i=0; i<10; i++){
+    for(uint8_t j=0; j<10; j++){
+      ard.print(static_cast<uint8_t>(Map[GetOffset(i,j)]));
+    }
+    ard.println();
+  }
 }
+
 
