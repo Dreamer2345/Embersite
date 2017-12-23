@@ -14,7 +14,7 @@ void InitMap(){
 
 uint8_t GetOffset(uint8_t x,uint8_t y){ return (x+(y*MAXX));}
 
-void AddToStack(s * Stack,UPoint cp){
+void AddToStack(UPoint * s,UPoint cp){
   for(uint8_t i=0; i<100; i++){
     if (s[i].Used == false) {
       s[i].x = cp.x;
@@ -25,7 +25,7 @@ void AddToStack(s * Stack,UPoint cp){
   }
 }
 
-Point RemoveFromStack(s * Stack){
+UPoint RemoveFromStack(UPoint * s){
   UPoint p;
   for(uint8_t i=100; i>0; i--){
     if (s[i].Used == true) {
@@ -51,14 +51,14 @@ bool CheckDir(uint8_t d,uint8_t _x,uint8_t _y){
   if (x > MAXX) {return false;}
   if (y > MAXY) {return false;}
 
-  if (Map[GetOffset(x,y) == MapElement::Null]) {return true;}
+  if (Map[GetOffset(x,y)] == MapElements::Null) {return true;}
   else {return false;}  
 }
 
 void SetMapCurrent(UPoint Cur,uint8_t d){
-  MapElement Elem = Map[GetOffset(Cur.x,Cur.y);
-  MapElement Elem1 = MapElement::Null;
-  if (Elem == MapElement::Null]) {
+  MapElements Elem = Map[GetOffset(Cur.x,Cur.y)];
+  MapElements Elem1 = MapElements::Null;
+  if (Elem == MapElements::Null) {
     switch(d){
       case 0:Elem1 = MapElements::RoomEndDown; break;
       case 1:Elem1 = MapElements::RoomEndUp; break;
@@ -93,7 +93,7 @@ void SetMapCurrent(UPoint Cur,uint8_t d){
                                     } break;
     }
   }
-  Map[GetOffset(Cur.x,Cur.y) = Elem1;
+  Map[GetOffset(Cur.x,Cur.y)] = Elem1;
 }
 
 
@@ -109,13 +109,13 @@ uint8_t CheckSuround(UPoint Cur){
   }
   if (Usable == 0) {return 0;}
   else {
-    uint8_t Rcount = rand(0,Usable);
+    uint8_t Rcount = random(0,Usable);
     for (uint8_t i=0; i<4;i++){
         if (p[i] == true) {
         if (Rcount != 0){Rcount--;}
         else{
           Usable = i;
-          break
+          break;
         }
         }
     }
@@ -134,15 +134,17 @@ void GenMaze(){
     UPoint Stack[100];
     UPoint CurPoint;
     InitMap();
-    CurPoint.x = rand(0,9);
-    CurPoint.y = rand(0,9);
-    uint8_t d = rand(0,3);
+    CurPoint.x = random(0,9);
+    CurPoint.y = random(0,9);
+    uint8_t d = random(0,3);
+    MapElements Elem1;
     switch(d){
       case 0:Elem1 = MapElements::RoomEndUp; break;
       case 1:Elem1 = MapElements::RoomEndDown; break;
       case 2:Elem1 = MapElements::RoomEndRight; break;
       case 3:Elem1 = MapElements::RoomEndLeft; break;
       };
+    Map[GetOffset(CurPoint.x,CurPoint.y)] = Elem1;
     AddToStack(Stack,CurPoint);
 
     
@@ -157,10 +159,10 @@ void GenMaze(){
           };
 
           AddToStack(Stack,CurPoint);
-          SetMapCurrent(CurPoint,d)
+          SetMapCurrent(CurPoint,d);
           Used--;
-          if (rand(0,10) == 0){
-            d = rand(0,3);
+          if (random(0,10) == 0){
+            d = random(0,3);
           }
           
       } else {
@@ -178,9 +180,9 @@ void GenMaze(){
 void UpdateGame(){
   for(uint8_t i=0; i<10; i++){
     for(uint8_t j=0; j<10; j++){
-      ard.print(Map[GetOffset(i,j)]);
+      ard.print('o');
     }
-    ar.println();
+    ard.println();
   }
 }
 
