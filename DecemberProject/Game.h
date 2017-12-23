@@ -35,6 +35,7 @@ UPoint RemoveFromStack(UPoint * s){
       break;
     }
   }
+  return p;
 }
 
 bool CheckDir(uint8_t d,uint8_t _x,uint8_t _y){
@@ -48,8 +49,8 @@ bool CheckDir(uint8_t d,uint8_t _x,uint8_t _y){
     case 3:x--;break;
   };
 
-  if (x > MAXX) {return false;}
-  if (y > MAXY) {return false;}
+  if (x > MAXX+1) {return false;}
+  if (y > MAXY+1) {return false;}
 
   if (Map[GetOffset(x,y)] == MapElements::Null) {return true;}
   else {return false;}  
@@ -124,13 +125,36 @@ uint8_t CheckSuround(UPoint Cur){
   return Usable+1;
 }
 
+uint8_t GetUsed(){
+  uint8_t Used = 0;
+  for(uint8_t i=0; i<100; i++)
+    if (Map[i] != MapElements::Null)
+        Used++;
+    else ard.println(i);
+  return 100-Used;
+}
 
+void Disp(){
+    ard.clear();
+    GetUsed();
+    /*
+    for(uint8_t i=5; i<10; i++){
+        for(uint8_t j=0; j<10; j++){
+          if (Map[GetOffset(i,j)] != MapElements::Null)
+            ard.print('1');
+          else
+            ard.print('0');
+        }
+        ard.println(i);
+      }
+    */
+    ard.display();
+}
 
 
 
 
 void GenMaze(){
-    uint8_t Used = 99;
     UPoint Stack[100];
     UPoint CurPoint;
     InitMap();
@@ -149,7 +173,8 @@ void GenMaze(){
 
     
 
-    while (Used > 0){
+    while (GetUsed() != 0){
+      Disp();
       if (CheckDir(d,CurPoint.x,CurPoint.y)){
           switch(d){
             case 0:CurPoint.y++;break;
@@ -160,8 +185,7 @@ void GenMaze(){
 
           AddToStack(Stack,CurPoint);
           SetMapCurrent(CurPoint,d);
-          Used--;
-          if (random(0,10) == 0){
+          if (random(0,3) == 0){
             d = random(0,3);
           }
           
@@ -171,6 +195,7 @@ void GenMaze(){
         } else {
           while (CheckSuround(CurPoint) == 0){
             CurPoint = RemoveFromStack(Stack);
+          d = CheckSuround(CurPoint);
           }
         }
       }
@@ -178,11 +203,5 @@ void GenMaze(){
 }
 
 void UpdateGame(){
-  for(uint8_t i=0; i<10; i++){
-    for(uint8_t j=0; j<10; j++){
-      ard.print('o');
-    }
-    ard.println();
-  }
 }
 
