@@ -173,7 +173,14 @@ void GenMaze(){
         }
       }
     }
-    
-  
+}
+
+void UpdateGame(){
+  for(uint8_t i=0; i<10; i++){
+    for(uint8_t j=0; j<10; j++){
+      ard.print(Map[GetOffset(i,j)]);
+    }
+    ar.println();
+  }
 }
 

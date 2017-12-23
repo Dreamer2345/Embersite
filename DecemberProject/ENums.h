@@ -8,6 +8,7 @@ enum class GameState {
       Settings, 
       Game ,
       LoadMap ,
+      Gen,
 };
 
 enum class MapElements : uint8_t {
@@ -30,7 +31,7 @@ enum class MapElements : uint8_t {
 };
 
 
-GameState gameState = GameState::Game;
+GameState gameState = GameState::Gen;
 
 
 

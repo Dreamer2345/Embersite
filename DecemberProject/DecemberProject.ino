@@ -24,7 +24,8 @@ void loop() {
   
   switch(gameState)
   {
-    case GameState::Game: break;
+    case GameState::Gen: GenMaze(); gameState = GameState::Game; break;
+    case GameState::Game: UpdateGame(); break;
   }
 
   ard.display();
