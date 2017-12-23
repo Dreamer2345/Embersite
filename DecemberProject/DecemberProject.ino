@@ -1,9 +1,9 @@
 #include <Arduboy2.h>
 Arduboy2 ard;
 Sprites sprites;
-uint8_t Map[100];
-#include "Enums.h"
-
+#include "ENums.h"
+MapElements Map[100];
+#include "Game.h"
 
 
 

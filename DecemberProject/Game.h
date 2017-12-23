@@ -1,20 +1,20 @@
 #pragma once
-struct Point{
+struct UPoint{
   uint8_t x;
   uint8_t y;
   bool Used;
-}
+};
 
 
 void InitMap(){
   for(uint8_t i=0; i<100; i++){
-    Map[i] = MapElement::Null;
+    Map[i] = MapElements::Null;
   }
 }
 
 uint8_t GetOffset(uint8_t x,uint8_t y){ return (x+(y*MAXX));}
 
-void AddToStack(s * Stack,Point cp){
+void AddToStack(s * Stack,UPoint cp){
   for(uint8_t i=0; i<100; i++){
     if (s[i].Used == false) {
       s[i].x = cp.x;
@@ -26,7 +26,7 @@ void AddToStack(s * Stack,Point cp){
 }
 
 Point RemoveFromStack(s * Stack){
-  Point p;
+  UPoint p;
   for(uint8_t i=100; i>0; i--){
     if (s[i].Used == true) {
       p.x = s[i].x;
@@ -55,7 +55,7 @@ bool CheckDir(uint8_t d,uint8_t _x,uint8_t _y){
   else {return false;}  
 }
 
-void SetMapCurrent(Point Cur,uint8_t d){
+void SetMapCurrent(UPoint Cur,uint8_t d){
   MapElement Elem = Map[GetOffset(Cur.x,Cur.y);
   MapElement Elem1 = MapElement::Null;
   if (Elem == MapElement::Null]) {
@@ -97,7 +97,7 @@ void SetMapCurrent(Point Cur,uint8_t d){
 }
 
 
-uint8_t CheckSuround(Point Cur){
+uint8_t CheckSuround(UPoint Cur){
   uint8_t x = Cur.x;
   uint8_t y = Cur.y;
   bool p[4];
@@ -131,8 +131,8 @@ uint8_t CheckSuround(Point Cur){
 
 void GenMaze(){
     uint8_t Used = 99;
-    Point Stack[100];
-    Point CurPoint;
+    UPoint Stack[100];
+    UPoint CurPoint;
     InitMap();
     CurPoint.x = rand(0,9);
     CurPoint.y = rand(0,9);
