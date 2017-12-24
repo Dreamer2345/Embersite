@@ -177,20 +177,37 @@ uint8_t GetUsed(){
 
 void Disp(){
     ard.clear();
-    for(uint8_t i=0; i<10; i++){
-        for(uint8_t j=0; j<10; j++){
-          if (Map[GetOffset(i,j)] != MapElements::Null)
-            ard.print('1');
-          else
-            ard.print('0');
-        }
-        ard.println();
-      }
+          for(uint8_t i=0; i<10; i++){
+            for(uint8_t j=0; j<10; j++){
+              ard.print(static_cast<uint8_t>(Map[GetOffset(i,j)]));
+            }
+            ard.println();
+          }
     ard.display();
 }
 
+void InitPlayer(){
+  
+}
 
-
+void DisplayEnviroment()
+{
+  int tileX = GetTileX(Player.x);
+  int tileY = GetTileY(Player.y);
+  int offsetX = GetTileXOffset(Player.x);
+  int offsetY = GetTileYOffset(Player.y);
+    
+  for (int i = -5; i < 5; i++)
+  {
+    for(int j = -3; j < 3; j++)
+    {
+      uint8_t block = GetBlockTrans(tileX + i, tileY + j);
+      int drawX = (i * 8) + CENTERX - offsetX;
+      int drawY = (j * 8) + CENTERY - offsetY;
+      sprites.drawSelfMasked(drawX, drawY, Background, block);
+    }
+  }
+}
 
 void GenMaze(){
     UPoint Stack[100];
@@ -198,6 +215,8 @@ void GenMaze(){
     InitMap();
     CurPoint.x = random(0,9);
     CurPoint.y = random(0,9);
+    Player.Tilex = CurPoint.x;
+    Player.Tiley = CurPoint.y;
     uint8_t d = random(0,3);
     MapElements Elem1;
     switch(d){
@@ -213,6 +232,7 @@ void GenMaze(){
 
     while (GetUsed() != 0){
       Disp();
+      SetMapCurrent(CurPoint,d);
       if (CheckDir(d,CurPoint.x,CurPoint.y)){
           
           switch(d){
@@ -223,7 +243,6 @@ void GenMaze(){
           };
 
           AddToStack(Stack,CurPoint);
-          SetMapCurrent(CurPoint,d);
           
 
             if (CheckSuround(CurPoint) != 0){
@@ -237,16 +256,13 @@ void GenMaze(){
           CurPoint = RemoveFromStack(Stack);
         }
       }
+     
     }
 }
 
 void UpdateGame(){
-  for(uint8_t i=0; i<10; i++){
-    for(uint8_t j=0; j<10; j++){
-      ard.print(static_cast<uint8_t>(Map[GetOffset(i,j)]));
-    }
-    ard.println();
-  }
+  DisplayEnviroment();
+  Player.PlayerMovement();
 }
 
 

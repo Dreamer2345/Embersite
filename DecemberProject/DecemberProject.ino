@@ -1,7 +1,11 @@
 #include <Arduboy2.h>
 Arduboy2 ard;
 Sprites sprites;
+#include "Bitmaps.h"
 #include "ENums.h"
+#include "Maps.h"
+#include "Player.h"
+PlayerClass Player;
 MapElements Map[100];
 #include "Game.h"
 
